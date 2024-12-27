@@ -1,0 +1,22 @@
+[project]
+name = "ggrep"
+version = "0.1.0"
+description = "Grid grep - search rectangular 'gridded' files, such as Excel, TSV, and CSV."
+readme = "README.md"
+authors = [
+    { name = "terrycojones", email = "tcj25@cam.ac.uk" }
+]
+requires-python = ">=3.13"
+dependencies = []
+
+[project.scripts]
+ggrep = "ggrep:main"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.4",
+]
