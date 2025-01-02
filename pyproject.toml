@@ -6,11 +6,27 @@ readme = "README.md"
 authors = [
     { name = "terrycojones", email = "tcj25@cam.ac.uk" }
 ]
-requires-python = ">=3.13"
-dependencies = []
+requires-python = ">=3.10"
+dependencies = [
+    "click-option-group>=0.5.6",
+    "click>=8.1.8",
+    "fastexcel>=0.12.0",
+    "polars>=1.18.0",
+    "rich>=13.9.4",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+Homepage = "https://github.com/terrycojones/ggrep"
+Issues = "https://github.com/terrycojones/ggrep/issues"
+
 
 [project.scripts]
-ggrep = "ggrep:main"
+ggrep = "ggrep.cli:cli"
 
 [build-system]
 requires = ["hatchling"]
@@ -18,5 +34,18 @@ build-backend = "hatchling.build"
 
 [dependency-groups]
 dev = [
+    "nox>=2024.10.9",
     "pytest>=8.3.4",
 ]
+
+[tool.pytest.ini_options]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "-ra"
+]
+testpaths = "test"
+# markers = [
+#     "smoke: subset of tests",
+#     "exception: check for expected exceptions"
+# ]
