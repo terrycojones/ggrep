@@ -45,8 +45,8 @@ class Match:
         result = []
         for i, row in enumerate(self.rows):
             result.append(
-                f"Row {i} matched {row.matched()}: " +
-                " ".join(["1" if cell.matched else "0" for cell in row])
+                f"Row {i} matched {row.matched()}: "
+                + " ".join(["1" if cell.matched else "0" for cell in row])
             )
         return "\n".join(result)
 
@@ -58,7 +58,7 @@ class Match:
         row_numbers: bool,
         col_numbers: bool,
         filenames: bool,
-        color: str,
+        color: str | None,
         missing: str | None,
         only_matching_cols: bool,
         excel_cols: bool,
@@ -95,7 +95,9 @@ class Match:
 
         return pl.DataFrame(data)
 
-    def rich_table(self, df: pl.DataFrame, width: int | None) -> str:
+    def rich_table(
+        self, df: pl.DataFrame, width: int | None, out: Path | None
+    ) -> str | None:
         table = Table(title=self._grid.filename)
 
         for col_index, col_name in enumerate(df.columns):
@@ -110,11 +112,16 @@ class Match:
         for row in df.iter_rows():
             table.add_row(*map(str, row))
 
-        console = Console(width=width)
-        with console.capture() as capture:
-            console.print(table)
+        if out is None:
+            console = Console(width=width)
+            with console.capture() as capture:
+                console.print(table)
 
-        return capture.get()
+            return capture.get()
+        else:
+            with open(out, "w") as fp:
+                console = Console(file=fp, width=width)
+                console.print(table)
 
     def format(
         self,
@@ -128,30 +135,41 @@ class Match:
         row_numbers: bool,
         col_numbers: bool,
         excel_cols: bool,
-    ) -> str:
+        out: Path | None,
+    ) -> str | None:
         df = self.polars_df(
             row_numbers,
             col_numbers,
             filenames,
-            color=color,
+            color=None if out else color,
             missing=missing,
             only_matching_cols=only_matching_cols,
             excel_cols=excel_cols,
         )
 
         if count:
-            return f"{len(df)}\n"
+            result = f"{len(df)}\n"
+            if out:
+                with open(out, "w") as fp:
+                    print(result, end="", file=fp)
+            else:
+                return result
 
         elif format_ in {"csv", "tsv"}:
-            output = StringIO()
-            df.write_csv(output, separator="," if format_ == "csv" else "\t")
-            return output.getvalue()
+            separator = "," if format_ == "csv" else "\t"
+            if out:
+                with open(out, "w") as fp:
+                    df.write_csv(fp, separator=separator)
+            else:
+                output = StringIO()
+                df.write_csv(output, separator=separator)
+                return output.getvalue()
 
         elif format_ == "rich":
-            return self.rich_table(df, width)
+            return self.rich_table(df, width, out)
+
+        elif format_ == "excel":
+            df.write_excel(out)
 
         else:
             raise ValueError(f"Unknown output format {format_!r}.")
-
-    def write(self, out: Path) -> None:
-        print(f"Wrote to {str(out)!r}.")

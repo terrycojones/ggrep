@@ -3,10 +3,42 @@ import click
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 import re
 from pathlib import Path
-from rich import print
+from rich import print as rprint
 
 from ggrep.grid import Grid
 from ggrep.match import Match
+
+
+def check_args(
+    filenames: list[Path],
+    pattern: str,
+    ignore_case: bool,
+    format_: str,
+    out: Path | None,
+) -> re.Pattern:
+    try:
+        regex = re.compile(pattern, re.I if ignore_case else 0)
+    except re.PatternError:
+        raise click.BadParameter(
+            "must be a valid regular expression.",
+            param_hint="--pattern",
+        )
+
+    if len(filenames) > 1 and out:
+        print(
+            "If you specify multiple files to match, you cannot also use --out.",
+            file=sys.stderr,
+        )
+        sys.exit(-1)
+
+    if format_ == "excel" and out is None:
+        print(
+            "For Excel output you must use --out to give a filename.",
+            file=sys.stderr,
+        )
+        sys.exit(-1)
+
+    return regex
 
 
 @click.command()
@@ -39,19 +71,15 @@ from ggrep.match import Match
 @click.option(
     "--format",
     "format_",
-    type=click.Choice(["tsv", "csv", "rich"], case_sensitive=False),
+    type=click.Choice(["csv", "excel", "rich", "tsv"], case_sensitive=False),
     default="tsv",
     help="The output format.",
 )
 @click.option(
     "-c", "--count", is_flag=True, help="Only print the number of matching lines."
 )
-@click.option(
-    "--width", type=int, help="The width to use for --format rich tables."
-)
-@click.option(
-    "-v", "--invert", is_flag=True, help="Print non-matching lines."
-)
+@click.option("--width", type=int, help="The width to use for --format rich tables.")
+@click.option("-v", "--invert", is_flag=True, help="Print non-matching lines.")
 @click.option(
     "--only-matching-cols",
     is_flag=True,
@@ -69,7 +97,9 @@ from ggrep.match import Match
 )
 @click.option("--row-numbers", is_flag=True, help="Show row numbers.")
 @click.option("--col-numbers", is_flag=True, help="Show column numbers.")
-@click.option("--excel-cols", is_flag=True, help="Add Excel column labels to column names.")
+@click.option(
+    "--excel-cols", is_flag=True, help="Add Excel column labels to column names."
+)
 @optgroup.group(
     "Filenames",
     cls=MutuallyExclusiveOptionGroup,
@@ -88,7 +118,7 @@ from ggrep.match import Match
     help="Never print the name of matching files (like grep -h)",
 )
 def cli(
-    pattern: re.Pattern,
+    pattern: str,
     filenames: list[Path],
     out: Path | None,
     header: bool,
@@ -107,52 +137,43 @@ def cli(
     filenames_always: bool,
     no_filename: bool,
 ) -> None:
-    if len(filenames) > 1 and out:
-        exit("If you specify multiple files to match, you cannot also use --out")
-
-    try:
-        regex = re.compile(pattern, re.I if ignore_case else 0)
-    except re.PatternError:
-        raise click.BadParameter(
-            "must be a valid regular expression.",
-            param_hint="--pattern",
-        )
-
+    regex = check_args(filenames, pattern, ignore_case, format_, out)
     any_match = False
 
     for path in filenames:
         try:
             grid = Grid(path, header=header, skip=skip)
         except BaseException as e:
-            print(f"Could not read {str(path)!r}: {e}.", file=sys.stderr)
+            rprint(f"Could not read {str(path)!r}: {e}.", file=sys.stderr)
             sys.exit(-1)
 
-        match = Match(grid, regex, invert)
-        if out:
-            if match:
-                any_match = True
-                match.write(out)
+        if match := Match(grid, regex, invert):
+            any_match = True
+            if len(filenames) == 1:
+                print_filenames = not no_filename and filenames_always
             else:
-                print(f"No matches, {str(out)!r} not written to.", file=sys.stderr)
+                print_filenames = not no_filename
+
+            result = match.format(
+                format_=format_,
+                count=count,
+                width=width,
+                only_matching_cols=only_matching_cols,
+                filenames=print_filenames,
+                missing=missing,
+                color=color,
+                row_numbers=row_numbers,
+                col_numbers=col_numbers,
+                excel_cols=excel_cols,
+                out=out,
+            )
+
+            if not out:
+                assert isinstance(result, str)
+                p = print if format_ == "rich" else rprint
+                p(result, end="")
         else:
-            if match:
-                any_match = True
-                if len(filenames) == 1:
-                    print_filenames = not no_filename and filenames_always
-                else:
-                    print_filenames = not no_filename
-                result = match.format(
-                    format_=format_,
-                    count=count,
-                    width=width,
-                    only_matching_cols=only_matching_cols,
-                    filenames=print_filenames,
-                    missing=missing,
-                    color=color,
-                    row_numbers=row_numbers,
-                    col_numbers=col_numbers,
-                    excel_cols=excel_cols,
-                )
-                print(result, end="")
+            if out:
+                rprint(f"No matches, {str(out)!r} not written to.", file=sys.stderr)
 
     sys.exit(int(not any_match))
