@@ -1,18 +1,18 @@
-## ggrep
+## xgrep
 
 ### Documentation
 
-Can be found at [https://ggrep.readthedocs.io](https://ggrep.readthedocs.io/)
+Can be found at [https://xgrep.readthedocs.io](https://xgrep.readthedocs.io/)
 
 ### Example usage
 
-To give an example of using `ggrep`, suppose you have an Excel file with a
+To give an example of using `xgrep`, suppose you have an Excel file with a
 sheet that looks like this:
 
 <img src="docs/source/images/excel-example.png" width="600" style="border:1px solid #CCC"/>
 
 You'll find this file
-[here](https://github.com/terrycojones/ggrep/tree/main/docs/source/example.xlsx)
+[here](https://github.com/terrycojones/xgrep/tree/main/docs/source/example.xlsx)
 if you want to try the following commands.
 
 #### Find cells based on a regular expression
@@ -20,7 +20,7 @@ if you want to try the following commands.
 Look for the regular expression `'Xia|radius|Jilin'`:
 
 ```sh
-$ ggrep 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
 <img src="docs/source/images/search-1.png" width="600" style="border:1px solid #CCC"/>
@@ -36,7 +36,7 @@ Add the row numbers (`--rn`) and Excel column (`--ec`) information from the
 input Excel:
 
 ```sh
-$ ggrep --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
 <img src="docs/source/images/search-2.png" width="600" style="border:1px solid #CCC"/>
@@ -47,7 +47,7 @@ If you don't care about the values in cells that were not matched, you can
 give a value to display instead:
 
 ```sh
-$ ggrep -u . --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep -u . --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
 <img src="docs/source/images/search-3.png" width="600" style="border:1px solid #CCC"/>
@@ -58,7 +58,7 @@ To exclude columns with no matching cells, you can show only matching columns
 (`--omc`):
 
 ```sh
-$ ggrep --omc --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep --omc --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
 <img src="docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
@@ -71,7 +71,7 @@ The default output format is a
 produce CSV, TSV, or Excel using the `--format` option:
 
 ```sh
-$ ggrep --format csv 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep --format csv 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
 <img src="docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
@@ -82,8 +82,8 @@ using `--out`.
 ### Usage
 
 <pre>
-$ ggrep --help
-Usage: ggrep [OPTIONS] PATTERN FILENAMES...
+$ xgrep --help
+Usage: xgrep [OPTIONS] PATTERN FILENAMES...
 
   Command-line interface.
 

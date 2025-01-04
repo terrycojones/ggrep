@@ -1,8 +1,8 @@
 import re
 import pytest
 
-from ggrep.cell import Cell
-from ggrep.row import Row
+from xgrep.cell import Cell
+from xgrep.row import Row
 
 
 @pytest.mark.parametrize("index, invert", ((3, True), (4, False)))

@@ -1,7 +1,7 @@
 import re
 
-from ggrep.cell import Cell
-from ggrep.col import Col
+from xgrep.cell import Cell
+from xgrep.col import Col
 
 
 def test_default():

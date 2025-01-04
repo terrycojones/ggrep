@@ -3,7 +3,7 @@ from unittest.mock import patch
 from io import StringIO
 from pathlib import Path
 
-from ggrep.grid import Grid
+from xgrep.grid import Grid
 
 
 class CSV:

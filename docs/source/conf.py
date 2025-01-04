@@ -8,7 +8,7 @@ import os
 # -- Project information -----------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
-project = "ggrep"
+project = "xgrep"
 copyright = "2025, Terry Jones"
 author = "Terry Jones"
 

@@ -2,8 +2,8 @@ import pytest
 from io import StringIO
 from itertools import product
 
-from ggrep.grid import Grid
-from ggrep.match import Match
+from xgrep.grid import Grid
+from xgrep.match import Match
 
 
 class CSV:
@@ -35,7 +35,10 @@ BASIC_TSV = CSV(_BASIC_DATA, sep="\t")
 
 
 def basic_grid(data=BASIC_CSV, **kwargs):
-    return Grid(StringIO(data()), filename=f"test-data.{data.format_}", **kwargs)
+    kwargs.setdefault("header", False)
+    return Grid(
+        StringIO(data()), filename=f"test-data.{data.format_}", **kwargs
+    )
 
 
 class TestMatch:
@@ -53,7 +56,7 @@ class TestMatch:
     @pytest.mark.parametrize("data", (BASIC_CSV, BASIC_TSV))
     def test_header(self, data) -> None:
         "With a header in the CSV, we must not match its first line."
-        g = basic_grid(data)
+        g = basic_grid(data, header=True)
         m = Match(g, "name")
         assert m.format() == ""
 

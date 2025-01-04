@@ -7,11 +7,11 @@ from functools import partial
 from io import StringIO
 from pathlib import Path
 
-from ggrep.cell import Cell
-from ggrep.excel import int_to_excel_column
-from ggrep.row import Row
-from ggrep.col import Col
-from ggrep.grid import Grid
+from xgrep.cell import Cell
+from xgrep.excel import int_to_excel_column
+from xgrep.row import Row
+from xgrep.col import Col
+from xgrep.grid import Grid
 
 
 class Match:

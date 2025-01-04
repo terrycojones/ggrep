@@ -1,7 +1,7 @@
 import pytest
 import re
 
-from ggrep.cell import Cell
+from xgrep.cell import Cell
 
 
 def test_unmatched():

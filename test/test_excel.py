@@ -1,6 +1,6 @@
 import pytest
 
-from ggrep.excel import int_to_excel_column
+from xgrep.excel import int_to_excel_column
 
 
 def test_zero():

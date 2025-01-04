@@ -1,4 +1,4 @@
-from ggrep.cell import Cell
+from xgrep.cell import Cell
 
 
 class Row:

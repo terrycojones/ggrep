@@ -1,7 +1,7 @@
 [project]
-name = "ggrep"
+name = "xgrep"
 version = "0.2.3"
-description = "Grid grep - search rectangular 'gridded' files, such as Excel, TSV, and CSV."
+description = "xgrep: A grep for Excel (and CSV/TSV) files"
 readme = "README.md"
 authors = [
     { name = "terrycojones", email = "tcj25@cam.ac.uk" }
@@ -22,12 +22,12 @@ classifiers = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/terrycojones/ggrep"
-Issues = "https://github.com/terrycojones/ggrep/issues"
+Homepage = "https://github.com/terrycojones/xgrep"
+Issues = "https://github.com/terrycojones/xgrep/issues"
 
 
 [project.scripts]
-ggrep = "ggrep.cli:cli"
+xgrep = "xgrep.cli:cli"
 
 [build-system]
 requires = ["hatchling"]

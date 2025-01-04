@@ -1,5 +1,5 @@
-from ggrep.cell import Cell
-from ggrep.row import Row
+from xgrep.cell import Cell
+from xgrep.row import Row
 
 
 class Col(Row):

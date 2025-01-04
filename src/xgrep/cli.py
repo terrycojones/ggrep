@@ -5,8 +5,8 @@ import re
 from pathlib import Path
 from rich.console import Console
 
-from ggrep.grid import Grid
-from ggrep.match import Match
+from xgrep.grid import Grid
+from xgrep.match import Match
 
 
 def check_args(filenames: list[Path], format_: str, out: Path | None) -> None:

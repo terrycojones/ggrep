@@ -1,6 +1,6 @@
 from click.testing import CliRunner
 
-from ggrep.cli import cli
+from xgrep.cli import cli
 
 
 class TestCli:
