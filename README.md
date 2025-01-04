@@ -6,14 +6,16 @@ Can be found at [https://xgrep.readthedocs.io](https://xgrep.readthedocs.io/)
 
 ### Example usage
 
-To give an example of using `xgrep`, suppose you have an Excel file with a
+To give an example of using `xgrep`, suppose you have an Excel file (`example.xlsx`)) with a
 sheet that looks like this:
 
-<img src="docs/source/images/excel-example.png" width="600" style="border:1px solid #CCC"/>
+https://github.com/terrycojones/xgrep/tree/main/docs/source/images
+<img src="https://github.com/terrycojones/xgrep/tree/main/docs/source/images/excel-example.png" width="600" style="border:1px solid #CCC"/>
 
-You'll find this file
-[here](https://github.com/terrycojones/xgrep/tree/main/docs/source/example.xlsx)
-if you want to try the following commands.
+You can download
+[example.xlsx](https://github.com/terrycojones/xgrep/tree/main/docs/source/example.xlsx)
+(or find it in the `docs/source` directory in the repo) if you want to try
+the following commands.
 
 #### Find cells based on a regular expression
 
@@ -23,7 +25,7 @@ Look for the regular expression `'Xia|radius|Jilin'`:
 $ xgrep 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-1.png" width="600" style="border:1px solid #CCC"/>
+<img src="https://github.com/terrycojones/xgrep/tree/main/docs/source/images/search-1.png" width="600" style="border:1px solid #CCC"/>
 
 Note that the command-line output is all text. It is produced using the
 [Table class](https://rich.readthedocs.io/en/stable/tables.html) of the
@@ -39,7 +41,7 @@ input Excel:
 $ xgrep --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-2.png" width="600" style="border:1px solid #CCC"/>
+<img src="https://github.com/terrycojones/xgrep/tree/main/docs/source/images/search-2.png" width="600" style="border:1px solid #CCC"/>
 
 #### De-emphasize unmatched cells
 
@@ -50,7 +52,7 @@ give a value to display instead:
 $ xgrep -u . --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-3.png" width="600" style="border:1px solid #CCC"/>
+<img src="https://github.com/terrycojones/xgrep/tree/main/docs/source/images/search-3.png" width="600" style="border:1px solid #CCC"/>
 
 #### Only show matching columns
 
@@ -61,7 +63,7 @@ To exclude columns with no matching cells, you can show only matching columns
 $ xgrep --omc --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
+<img src="https://github.com/terrycojones/xgrep/tree/main/docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
 
 #### Write CSV (or TSV)
 
@@ -74,7 +76,7 @@ produce CSV, TSV, or Excel using the `--format` option:
 $ xgrep --format csv 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-5.png" width="600" style="border:1px solid #CCC"/>
+<img src="https://github.com/terrycojones/xgrep/tree/main/docs/source/images/search-5.png" width="600" style="border:1px solid #CCC"/>
 
 If you use `--format excel` you will also need to give an output filename
 using `--out`.

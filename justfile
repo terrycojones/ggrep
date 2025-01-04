@@ -22,4 +22,4 @@ docs:
 clean:
     find . -name '*~' -print0 | xargs -0 -r rm
     find . -name '__pycache__' -print0 | xargs -0 -r rm -r
-    rm -fr dist
+    rm -fr .pytest_cache dist
