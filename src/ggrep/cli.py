@@ -54,6 +54,7 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
     nargs=-1,
 )
 @click.option(
+    "-o",
     "--out",
     type=click.Path(dir_okay=False, path_type=Path),
     help=(
@@ -80,7 +81,7 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
     "--format",
     "format_",
     type=click.Choice(["csv", "excel", "rich", "tsv"], case_sensitive=False),
-    default="tsv",
+    default="rich",
     help="The output format.",
 )
 @click.option(

@@ -1,6 +1,6 @@
 [project]
 name = "ggrep"
-version = "0.2.0"
+version = "0.2.1"
 description = "Grid grep - search rectangular 'gridded' files, such as Excel, TSV, and CSV."
 readme = "README.md"
 authors = [
@@ -37,6 +37,8 @@ build-backend = "hatchling.build"
 dev = [
     "nox>=2024.10.9",
     "pytest>=8.3.4",
+    "sphinx-rtd-theme>=3.0.2",
+    "sphinx>=8.1.3",
 ]
 
 [tool.pytest.ini_options]
