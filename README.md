@@ -4,6 +4,17 @@
 
 Can be found at [https://xgrep.readthedocs.io](https://xgrep.readthedocs.io/)
 
+### Installation
+
+```
+$ pip install xgrep
+```
+
+Usage is similar to regular `grep`. Give a pattern and then one or more
+filenames. There are various options (some with the same name and effect as
+`grep` options, like `-c`, `-h`, `-H`, `-i`, and `-v`). Run `xgrep --help`
+for a full listing.
+
 ### Example usage
 
 To give an example of using `xgrep`, suppose you have an Excel file (`example.xlsx`)) with a
@@ -131,7 +142,8 @@ Options:
 
 ### Todo
 
+1. Document `format`, `polars_df`, and `rich_table` (in `readthedocs.io`).
 1. Make it possible to specify a sheet (only works if there is one Excel file?).
-1. Adjust col names Row and File in case they're already present.
+1. Adjust column names "Row" and "File" in case they're already present.
 1. Allow for processing multiple Excel files into individual sheets.
 1. Write tests for unequal numbers of cols.
