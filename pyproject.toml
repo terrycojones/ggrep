@@ -1,6 +1,6 @@
 [project]
 name = "ggrep"
-version = "0.2.1"
+version = "0.2.2"
 description = "Grid grep - search rectangular 'gridded' files, such as Excel, TSV, and CSV."
 readme = "README.md"
 authors = [
