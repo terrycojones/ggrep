@@ -1,6 +1,6 @@
 [project]
 name = "ggrep"
-version = "0.1.0"
+version = "0.2.0"
 description = "Grid grep - search rectangular 'gridded' files, such as Excel, TSV, and CSV."
 readme = "README.md"
 authors = [
@@ -46,7 +46,3 @@ addopts = [
     "-ra"
 ]
 testpaths = "test"
-# markers = [
-#     "smoke: subset of tests",
-#     "exception: check for expected exceptions"
-# ]
