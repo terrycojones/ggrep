@@ -32,7 +32,7 @@ the following commands.
 Look for the regular expression `'Xia|radius|Jilin'`:
 
 ```sh
-$ xgrep 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep 'Xia|radius|Jilin' example.xlsx
 ```
 
 <img src="https://github.com/terrycojones/xgrep/blob/main/docs/source/images/search-1.png" width="600" style="border:1px solid #CCC"/>
@@ -48,7 +48,7 @@ Add the row numbers (`--rn`) and Excel column (`--ec`) information from the
 input Excel:
 
 ```sh
-$ xgrep --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep --rn --ec 'Xia|radius|Jilin' example.xlsx
 ```
 
 <img src="https://github.com/terrycojones/xgrep/blob/main/docs/source/images/search-2.png" width="600" style="border:1px solid #CCC"/>
@@ -59,7 +59,7 @@ If you don't care about the values in cells that were not matched, you can
 give a value to display instead:
 
 ```sh
-$ xgrep -u . --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep -u . --rn --ec 'Xia|radius|Jilin' example.xlsx
 ```
 
 <img src="https://github.com/terrycojones/xgrep/blob/main/docs/source/images/search-3.png" width="600" style="border:1px solid #CCC"/>
@@ -70,7 +70,7 @@ To exclude columns with no matching cells, you can show only matching columns
 (`--omc`):
 
 ```sh
-$ xgrep --omc --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep --omc --rn --ec 'Xia|radius|Jilin' example.xlsx
 ```
 
 <img src="https://github.com/terrycojones/xgrep/blob/main/docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
@@ -83,7 +83,7 @@ The default output format is a
 produce CSV, TSV, or Excel using the `--format` option:
 
 ```sh
-$ xgrep --format csv 'Xia|radius|Jilin' docs/source/example.xlsx
+$ xgrep --format csv 'Xia|radius|Jilin' example.xlsx
 ```
 
 <img src="https://github.com/terrycojones/xgrep/blob/main/docs/source/images/search-5.png" width="600" style="border:1px solid #CCC"/>
