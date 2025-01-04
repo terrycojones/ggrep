@@ -56,7 +56,7 @@ $ xgrep --rn --ec 'Xia|radius|Jilin' example.xlsx
 #### De-emphasize unmatched cells
 
 If you don't care about the values in cells that were not matched, you can
-give a value to display instead:
+give a value to show in unmatched (`-u`) cells:
 
 ```sh
 $ xgrep -u . --rn --ec 'Xia|radius|Jilin' example.xlsx
