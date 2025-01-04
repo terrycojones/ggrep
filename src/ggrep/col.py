@@ -1,24 +1,13 @@
 from ggrep.cell import Cell
+from ggrep.row import Row
 
 
-class Col:
+class Col(Row):
     def __init__(self, index: int, invert: bool):
-        self.index = index
-        self.invert = invert
+        super().__init__(index, invert)
         self.numeric = True
-        self.cells = []
-
-    def __iter__(self):
-        return iter(self.cells)
-
-    @property
-    def matched(self):
-        if self.invert:
-            return not any(cell.matched for cell in self)
-        else:
-            return any(cell.matched for cell in self)
 
     def append(self, cell: Cell) -> None:
-        self.cells.append(cell)
+        super().append(cell)
         if not isinstance(cell.value, (float, int)):
             self.numeric = False

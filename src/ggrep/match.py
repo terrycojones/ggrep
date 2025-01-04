@@ -18,7 +18,7 @@ class Match:
     Match a pattern and provide ways to format the result.
     """
 
-    def __init__(self, grid: "Grid", pattern: str | re.Pattern, invert: bool):
+    def __init__(self, grid: "Grid", pattern: str | re.Pattern, invert: bool = False):
         self._grid = grid
         self._matched = False
         if isinstance(pattern, str):
@@ -59,7 +59,7 @@ class Match:
         col_numbers: bool,
         filenames: bool,
         color: str | None,
-        missing: str | None,
+        unmatched: str | None,
         only_matching_cols: bool,
         excel_cols: bool,
     ) -> pl.DataFrame:
@@ -88,7 +88,7 @@ class Match:
                     else:
                         key = excel_col if excel_cols else str_col
 
-                    data[key].append(cell.format(missing, color))
+                    data[key].append(cell.format(unmatched, color))
 
                 if filenames:
                     data["File"].append(self._grid.filename)
@@ -125,51 +125,55 @@ class Match:
 
     def format(
         self,
-        format_: str,
-        count: bool,
-        width: int | None,
-        only_matching_cols: bool,
-        filenames: bool,
-        missing: str | None,
-        color: str,
-        row_numbers: bool,
-        col_numbers: bool,
-        excel_cols: bool,
-        out: Path | None,
+        format_: str = "tsv",
+        count: bool = False,
+        width: int | None = None,
+        only_matching_cols: bool = False,
+        filenames: bool = False,
+        unmatched: str | None = None,
+        color: str | None = None,
+        row_numbers: bool = False,
+        col_numbers: bool = False,
+        excel_cols: bool = False,
+        out: Path | None = None,
     ) -> str | None:
         df = self.polars_df(
             row_numbers,
             col_numbers,
             filenames,
             color=None if out else color,
-            missing=missing,
+            unmatched=unmatched,
             only_matching_cols=only_matching_cols,
             excel_cols=excel_cols,
         )
 
+        result = None
+
         if count:
-            result = f"{len(df)}\n"
+            result = str(len(df))
             if out:
                 with open(out, "w") as fp:
                     print(result, end="", file=fp)
-            else:
-                return result
+                return
 
-        elif format_ in {"csv", "tsv"}:
+        elif format_ in ("csv", "tsv"):
             separator = "," if format_ == "csv" else "\t"
             if out:
                 with open(out, "w") as fp:
                     df.write_csv(fp, separator=separator)
-            else:
-                output = StringIO()
-                df.write_csv(output, separator=separator)
-                return output.getvalue()
+                return
+
+            output = StringIO()
+            df.write_csv(output, separator=separator, include_header=False)
+            result = output.getvalue()
 
         elif format_ == "rich":
-            return self.rich_table(df, width, out)
+            result = self.rich_table(df, width, out)
 
         elif format_ == "excel":
             df.write_excel(out)
 
         else:
             raise ValueError(f"Unknown output format {format_!r}.")
+
+        return None if result is None else result.rstrip("\n\r")

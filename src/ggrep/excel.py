@@ -1,4 +1,5 @@
 def int_to_excel_column(column_num: int) -> str:
+    assert column_num > 0
     # From https://blog.finxter.com/converting-integer-to-excel-column-name-in-python/
     column_chars = []
     while column_num > 0:

@@ -51,6 +51,7 @@ class Grid:
                     separator="," if suffix == ".csv" else "\t",
                     has_header=header,
                     skip_rows=skip,
+                    infer_schema=False,
                 )
                 if filename:
                     assert isinstance(source, StringIO)
@@ -63,4 +64,4 @@ class Grid:
                 raise ValueError(f"Unknown file suffix: {suffix!r}")
 
         self.col_names = rows.columns
-        self.rows = [list(row) for row in rows.iter_rows()]
+        self.rows = tuple(tuple(row) for row in rows.iter_rows())
