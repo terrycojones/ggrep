@@ -3,6 +3,7 @@ import polars as pl
 from collections import defaultdict
 from rich.console import Console
 from rich.table import Table
+from functools import partial
 from io import StringIO
 from pathlib import Path
 
@@ -86,7 +87,7 @@ class Match:
                         else:
                             key = col_name
                     else:
-                        key = excel_col if excel_cols else str_col
+                        key = "Column " + (excel_col if excel_cols else str_col)
 
                     data[key].append(cell.format(unmatched, color))
 
@@ -97,7 +98,7 @@ class Match:
 
     def rich_table(
         self, df: pl.DataFrame, width: int | None, out: Path | None
-    ) -> str | None:
+    ) -> Table | None:
         table = Table(title=self._grid.filename)
 
         for col_index, col_name in enumerate(df.columns):
@@ -113,11 +114,7 @@ class Match:
             table.add_row(*map(str, row))
 
         if out is None:
-            console = Console(width=width)
-            with console.capture() as capture:
-                console.print(table)
-
-            return capture.get()
+            return table
         else:
             with open(out, "w") as fp:
                 console = Console(file=fp, width=width)
@@ -126,6 +123,7 @@ class Match:
     def format(
         self,
         format_: str = "tsv",
+        only_filename: bool = False,
         count: bool = False,
         width: int | None = None,
         only_matching_cols: bool = False,
@@ -136,7 +134,7 @@ class Match:
         col_numbers: bool = False,
         excel_cols: bool = False,
         out: Path | None = None,
-    ) -> str | None:
+    ) -> str | Table | None:
         df = self.polars_df(
             row_numbers,
             col_numbers,
@@ -147,33 +145,41 @@ class Match:
             excel_cols=excel_cols,
         )
 
-        result = None
+        if count or only_filename:
+            if count:
+                result = f"{self._grid.filename + ':' if filenames else ''}{len(df)}"
+            else:
+                result = self._grid.filename
 
-        if count:
-            result = str(len(df))
             if out:
                 with open(out, "w") as fp:
-                    print(result, end="", file=fp)
+                    print(result, file=fp)
                 return
 
-        elif format_ in ("csv", "tsv"):
-            separator = "," if format_ == "csv" else "\t"
+            return result
+
+        if format_ in ("csv", "tsv"):
+            write_csv = partial(
+                df.write_csv,
+                separator="," if format_ == "csv" else "\t",
+                include_header=self._grid.header,
+            )
             if out:
                 with open(out, "w") as fp:
-                    df.write_csv(fp, separator=separator)
+                    write_csv(fp)
                 return
 
             output = StringIO()
-            df.write_csv(output, separator=separator, include_header=False)
-            result = output.getvalue()
+            write_csv(output)
+            # Drop the trailing newline so our caller can consistently print
+            # our result without needing to selectively use print(result, end="").
+            return output.getvalue().rstrip("\n")
 
-        elif format_ == "rich":
-            result = self.rich_table(df, width, out)
+        if format_ == "rich":
+            return self.rich_table(df, width, out)
 
-        elif format_ == "excel":
+        if format_ == "excel":
             df.write_excel(out)
+            return
 
-        else:
-            raise ValueError(f"Unknown output format {format_!r}.")
-
-        return None if result is None else result.rstrip("\n\r")
+        raise ValueError(f"Unknown output format {format_!r}.")

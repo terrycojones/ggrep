@@ -3,7 +3,7 @@ import click
 from click_option_group import optgroup, MutuallyExclusiveOptionGroup
 import re
 from pathlib import Path
-from rich import print as rprint
+from rich.console import Console
 
 from ggrep.grid import Grid
 from ggrep.match import Match
@@ -182,26 +182,24 @@ def cli(
         try:
             grid = Grid(path, header=header, skip=skip)
         except BaseException as e:
-            rprint(f"Could not read {str(path)!r}: {e}.", file=sys.stderr)
+            print(f"Could not read {str(path)!r}: {e}.", file=sys.stderr)
             sys.exit(-1)
 
         if match := Match(grid, regex, invert):
             any_match = True
 
             if quiet:
+                # No need to process any more files since we know the exit
+                # status will be 0 (a match was found in some file).
                 break
 
-            if only_filename:
-                print(str(path))
-                continue
-
+            print_filenames = not no_filename
             if len(filenames) == 1:
-                print_filenames = not no_filename and filenames_always
-            else:
-                print_filenames = not no_filename
+                print_filenames = print_filenames and filenames_always
 
             result = match.format(
                 format_=format_,
+                only_filename=only_filename,
                 count=count,
                 width=width,
                 only_matching_cols=only_matching_cols,
@@ -214,11 +212,12 @@ def cli(
                 out=out,
             )
 
+            # Print the result if we were not sending output to a file.
             if not out:
-                p = print if format_ == "rich" else rprint
-                p(result)
+                console = Console(width=width, highlight=False)
+                console.print(result)
         else:
             if out and not quiet:
-                rprint(f"No matches, {str(out)!r} not written to.", file=sys.stderr)
+                print(f"No matches, {str(out)!r} not written to.", file=sys.stderr)
 
     sys.exit(int(not any_match))
