@@ -143,6 +143,7 @@ Options:
 ### Todo
 
 1. Document `format`, `polars_df`, and `rich_table` (in `readthedocs.io`).
+1. Can `click` allow a `-e` option that also can be used to specify the pattern?
 1. Make it possible to specify a sheet (only works if there is one Excel file?).
 1. Adjust column names "Row" and "File" in case they're already present.
 1. Allow for processing multiple Excel files into individual sheets.
