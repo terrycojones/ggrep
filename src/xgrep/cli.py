@@ -59,7 +59,7 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
     type=click.Path(dir_okay=False, path_type=Path),
     help=(
         "The output file. If not given, output is written to standard out. "
-        "Note that if the --quiet (-q) options is given, no output is written "
+        "Note that if the --quiet (-q) option is also given, no output will be written "
         "to the output file."
     ),
 )
@@ -67,8 +67,8 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
     "--header/--no-header",
     default=True,
     help=(
-        "Don't look for a header line. In this case, text in what would otherwise "
-        "be considered a header can also be matched by the grep pattern."
+        "Don't look for a header line in input files. In this case, text in what "
+        "would otherwise be considered a header can also be matched by the grep pattern."
     ),
 )
 @click.option(
@@ -82,20 +82,32 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
     "format_",
     type=click.Choice(["csv", "excel", "rich", "tsv"], case_sensitive=False),
     default="rich",
-    help="The output format.",
+    help=(
+        "The output format. The 'rich' format produces a rich Table (see "
+        "https://rich.readthedocs.io/en/stable/tables.html)."
+    )
 )
 @click.option(
-    "-c", "--count", is_flag=True, help="Only print the number of matching lines."
+    "-c",
+    "--count",
+    is_flag=True,
+    help="Only print the number of matching lines (like grep -c).",
 )
 @click.option("--width", type=int, help="The width to use for --format rich tables.")
-@click.option("-v", "--invert", is_flag=True, help="Print non-matching lines.")
+@click.option(
+    "-v",
+    "--invert",
+    is_flag=True,
+    help="Only output rows that do not match (like grep -v).",
+)
 @click.option(
     "-q",
     "--quiet",
+    "--silent",
     is_flag=True,
     help=(
         "Do not show any output, just exit with a status indicating whether a match "
-        "was found (0) or not (1)."
+        "was found (0) or not (1) (like grep -q)."
     ),
 )
 @click.option(
@@ -105,7 +117,12 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
     is_flag=True,
     help="Only show columns that have a matching cell.",
 )
-@click.option("-i", "--ignore-case", is_flag=True, help="Ignore case while matching.")
+@click.option(
+    "-i",
+    "--ignore-case",
+    is_flag=True,
+    help="Ignore case while matching (like grep -i).",
+)
 @click.option("--color", default="green", help="The highlight color.")
 @click.option(
     "-u",
@@ -116,7 +133,14 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
         "to use the output color to see matches)."
     ),
 )
-@click.option("--row-numbers", "--rn", is_flag=True, help="Show row numbers.")
+@click.option(
+    "-n",
+    "--row-numbers",
+    "--rn",
+    "--line-number",
+    is_flag=True,
+    help="Show row numbers (like grep -n).",
+)
 @click.option("--col-numbers", "--cn", is_flag=True, help="Show column numbers.")
 @click.option(
     "--excel-cols",

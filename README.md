@@ -12,8 +12,8 @@ $ pip install xgrep
 
 Usage is similar to regular `grep`. Give a pattern and then one or more
 filenames. There are various options (some with the same name and effect as
-`grep` options, like `-c`, `-h`, `-H`, `-i`, and `-v`). Run `xgrep --help`
-for a full listing.
+`grep` options, like `-c`, `-h`, `-H`, `-i`, `-q`, and `-v`). Run `xgrep
+--help` for a full listing.
 
 ### Example usage
 
@@ -94,7 +94,6 @@ using `--out`.
 ### Usage
 
 <pre>
-$ xgrep --help
 Usage: xgrep [OPTIONS] PATTERN FILENAMES...
 
   Command-line interface.
@@ -102,31 +101,36 @@ Usage: xgrep [OPTIONS] PATTERN FILENAMES...
 Options:
   -o, --out FILE                  The output file. If not given, output is
                                   written to standard out. Note that if the
-                                  --quiet (-q) options is given, no output is
-                                  written to the output file.
-  --header / --no-header          Don't look for a header line. In this case,
-                                  text in what would otherwise be considered a
-                                  header can also be matched by the grep
-                                  pattern.
+                                  --quiet (-q) option is also given, no output
+                                  will be written to the output file.
+  --header / --no-header          Don't look for a header line in input files.
+                                  In this case, text in what would otherwise
+                                  be considered a header can also be matched
+                                  by the grep pattern.
   --skip INTEGER RANGE            Skip this many rows at the start of the
                                   input file(s).  [x>=0]
-  --format [csv|excel|rich|tsv]   The output format.
-  -c, --count                     Only print the number of matching lines.
+  --format [csv|excel|rich|tsv]   The output format. The 'rich' format
+                                  produces a rich Table (see https://rich.read
+                                  thedocs.io/en/stable/tables.html).
+  -c, --count                     Only print the number of matching lines
+                                  (like grep -c).
   --width INTEGER                 The width to use for --format rich tables.
-  -v, --invert                    Print non-matching lines.
-  -q, --quiet                     Do not show any output, just exit with a
-                                  status indiacting whether a match was found
-                                  (0) or not (1).
+  -v, --invert                    Only output rows that do not match (like
+                                  grep -v).
+  -q, --quiet, --silent           Do not show any output, just exit with a
+                                  status indicating whether a match was found
+                                  (0) or not (1) (like grep -q).
   --only-matching-cols, --omc, --mco
                                   Only show columns that have a matching cell.
-  -i, --ignore-case               Ignore case while matching.
+  -i, --ignore-case               Ignore case while matching (like grep -i).
   --color TEXT                    The highlight color.
   -u, --unmatched TEXT            The string to show for cells whose values do
                                   not match. If not given, non-matching cells
                                   are shown with their value (in which case
                                   you will need to use the output color to see
                                   matches).
-  --row-numbers, --rn             Show row numbers.
+  -n, --row-numbers, --rn, --line-number
+                                  Show row numbers (like grep -n).
   --col-numbers, --cn             Show column numbers.
   --excel-cols, --ec              Add Excel column labels to column names.
   Filenames: [mutually_exclusive]
