@@ -94,7 +94,7 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
     "--quiet",
     is_flag=True,
     help=(
-        "Do not show any output, just exit with a status indiacting whether a match "
+        "Do not show any output, just exit with a status indicating whether a match "
         "was found (0) or not (1)."
     ),
 )
