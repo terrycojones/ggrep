@@ -74,7 +74,7 @@ produce CSV, TSV, or Excel using the `--format` option:
 $ xgrep --format csv 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
+<img src="docs/source/images/search-5.png" width="600" style="border:1px solid #CCC"/>
 
 If you use `--format excel` you will also need to give an output filename
 using `--out`.
