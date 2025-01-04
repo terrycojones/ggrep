@@ -9,7 +9,7 @@ Can be found at [https://ggrep.readthedocs.io](https://ggrep.readthedocs.io/)
 To give an example of using `ggrep`, suppose you have an Excel file with a
 sheet that looks like this:
 
-<img src="docs/source/images/excel-example.png" width="900" style="border:1px solid #CCC"/>
+<img src="docs/source/images/excel-example.png" width="600" style="border:1px solid #CCC"/>
 
 You'll find this file
 [here](https://github.com/terrycojones/ggrep/tree/main/docs/source/example.xlsx)
@@ -23,7 +23,7 @@ Look for the regular expression `'Xia|radius|Jilin'`:
 $ ggrep 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-1.png" width="900" style="border:1px solid #CCC"/>
+<img src="docs/source/images/search-1.png" width="600" style="border:1px solid #CCC"/>
 
 Note that the command-line output is all text. It is produced using the
 [Table class](https://rich.readthedocs.io/en/stable/tables.html) of the
@@ -39,7 +39,7 @@ input Excel:
 $ ggrep --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-2.png" width="900" style="border:1px solid #CCC"/>
+<img src="docs/source/images/search-2.png" width="600" style="border:1px solid #CCC"/>
 
 #### De-emphasize unmatched cells
 
@@ -50,7 +50,7 @@ give a value to display instead:
 $ ggrep -u . --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-3.png" width="900" style="border:1px solid #CCC"/>
+<img src="docs/source/images/search-3.png" width="600" style="border:1px solid #CCC"/>
 
 #### Only show matching columns
 
@@ -61,7 +61,7 @@ To exclude columns with no matching cells, you can show only matching columns
 $ ggrep --omc --rn --ec 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-4.png" width="900" style="border:1px solid #CCC"/>
+<img src="docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
 
 #### Write CSV (or TSV)
 
@@ -74,7 +74,7 @@ produce CSV, TSV, or Excel using the `--format` option:
 $ ggrep --format csv 'Xia|radius|Jilin' docs/source/example.xlsx
 ```
 
-<img src="docs/source/images/search-4.png" width="900" style="border:1px solid #CCC"/>
+<img src="docs/source/images/search-4.png" width="600" style="border:1px solid #CCC"/>
 
 If you use `--format excel` you will also need to give an output filename
 using `--out`.
