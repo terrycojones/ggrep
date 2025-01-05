@@ -168,6 +168,7 @@ Options:
                                   multiple files are being searched. Note that
                                   Excel does not allow some characters (e.g.,
                                   ':') in sheet names.
+  --version                       Show the version and exit.
   --help                          Show this message and exit.
 </pre>
 

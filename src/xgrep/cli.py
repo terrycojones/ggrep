@@ -250,6 +250,7 @@ def get_regex(pattern: str, ignore_case: bool) -> re.Pattern:
         "some characters (e.g., ':') in sheet names."
     ),
 )
+@click.version_option()
 def cli(
     pattern: str,
     filenames: list[Path],
