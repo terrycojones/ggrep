@@ -23,8 +23,8 @@ sheet that looks like this:
 <img src="https://github.com/terrycojones/xgrep/blob/main/docs/source/images/excel-example.png" width="600" style="border:1px solid #CCC"/>
 
 You can download
-[example.xlsx](https://github.com/terrycojones/xgrep/blob/main/docs/source/example.xlsx)
-(or find it in the `docs/source` directory in the repo) if you want to try
+[example.xlsx](https://github.com/terrycojones/xgrep/blob/main/docs/source/excel/example.xlsx)
+(or find it in the `docs/source/excel` directory in the repo) if you want to try
 the following commands.
 
 #### Find cells based on a regular expression
