@@ -3,7 +3,7 @@ from unittest.mock import patch
 from io import StringIO
 from pathlib import Path
 
-from xgrep.grid import Grid
+from xgrep.grid import grid_reader
 
 
 class CSV:
@@ -34,8 +34,11 @@ BASIC_CSV = CSV(_BASIC_DATA, sep=",")
 BASIC_TSV = CSV(_BASIC_DATA, sep="\t")
 
 
-def basic_grid(data=BASIC_CSV, **kwargs):
-    return Grid(StringIO(data()), filename=f"test-data.{data.format_}", **kwargs)
+def basic_grid(data, **kwargs):
+    return list(
+        grid_reader(
+            StringIO(data()), filename=f"test-data.{data.format_}", **kwargs)
+    )[0]
 
 
 class TestGrid:
@@ -46,8 +49,9 @@ class TestGrid:
     def test_nonexistent_path(self) -> None:
         with patch.object(Path, "exists") as mock_exists:
             mock_exists.return_value = False
+            grids = grid_reader(Path("xxx.xlsx"))
             with pytest.raises(FileNotFoundError):
-                Grid(Path("xxx.xlsx"))
+                next(grids)
 
     @pytest.mark.parametrize("data", (BASIC_CSV, BASIC_TSV))
     def test_rows(self, data) -> None:

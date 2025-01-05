@@ -91,6 +91,11 @@ $ xgrep --format csv 'Xia|radius|Jilin' example.xlsx
 If you use `--format excel` you will also need to give an output filename
 using `--out`.
 
+#### More...
+
+By default, `xgrep` will only search the first sheet in a workbook. You can
+search them all by passing `--sheet-id 0`.
+
 ### Usage
 
 <pre>
@@ -120,6 +125,9 @@ Options:
   -q, --quiet, --silent           Do not show any output, just exit with a
                                   status indicating whether a match was found
                                   (0) or not (1) (like grep -q).
+  --ignore-missing-sheets, --ims  Do not exit if a requested sheet cannot be
+                                  found in an input Excel file. A warning will
+                                  be printed unless --quiet is used.
   --only-matching-cols, --omc, --mco
                                   Only show columns that have a matching cell.
   -i, --ignore-case               Ignore case while matching (like grep -i).
@@ -131,8 +139,19 @@ Options:
                                   matches).
   -n, --row-numbers, --rn, --line-number
                                   Show row numbers (like grep -n).
-  --col-numbers, --cn             Show column numbers.
+  --col-numbers, --cn             Show numeric column numbers. For alphabetic
+                                  Excel column labels, use --excel-cols.
   --excel-cols, --ec              Add Excel column labels to column names.
+  -b, --basename                  Only show basenames of input files in the
+                                  output (and in Excel sheet names, in the
+                                  case of --format excel).
+  --save-empty-output, --seo      If there are no matches in a file (or Excel
+                                  sheet), nothing will be written to the
+                                  output file (so the output file will not
+                                  exist after xgrep exits). Use this option to
+                                  force the writing of empty output files (and
+                                  creation of empty Excel worksheets in the
+                                  case of --format excel).
   Filenames: [mutually_exclusive]
                                   Whether to display names of matching files.
     -H, --filenames-always, --fa  Always print the name of matching files
@@ -141,6 +160,19 @@ Options:
                                   grep -h).
     --only-filename, --of         Only print the names of matching files, not
                                   their matched content.
+  --sheet-name, --sn TEXT         The name(s) of the sheet(s) to read. May be
+                                  repeated. Cannot be used with --sheet-id.
+  --sheet-id, --si INTEGER        The numeric number(s) of the sheet(s) to
+                                  read. The default is to search all workbook
+                                  sheets in all Excel files (this is
+                                  equivalent to --sheet-id 0). Individual
+                                  sheet numbering starts from 1. May be
+                                  repeated. Cannot be used with --sheet-name.
+  --sheet-separator, --ss TEXT    The string used to separate filenames from
+                                  sheet names when --format excel is used and
+                                  multiple files are being searched. Note that
+                                  Excel does not allow some characters (e.g.,
+                                  ':') in sheet names.
   --help                          Show this message and exit.
 </pre>
 
@@ -148,7 +180,4 @@ Options:
 
 1. Document `format`, `polars_df`, and `rich_table` (in `readthedocs.io`).
 1. Can `click` allow a `-e` option that also can be used to specify the pattern?
-1. Make it possible to specify a sheet (only works if there is one Excel file?).
-1. Adjust column names "Row" and "File" in case they're already present.
-1. Allow for processing multiple Excel files into individual sheets.
 1. Write tests for unequal numbers of cols.

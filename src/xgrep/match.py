@@ -1,14 +1,13 @@
 import re
 import polars as pl
+import polars.selectors as cs
 from collections import defaultdict
-from rich.console import Console
 from rich.table import Table
-from functools import partial
 from io import StringIO
 from pathlib import Path
 
 from xgrep.cell import Cell
-from xgrep.excel import int_to_excel_column
+from xgrep.excel import int_to_excel_column, ExcelWriter
 from xgrep.row import Row
 from xgrep.col import Col
 from xgrep.grid import Grid
@@ -66,59 +65,88 @@ class Match:
     ) -> pl.DataFrame:
         data = defaultdict(list)
         row_inc = 1 + self._grid.skip + self._grid.header
+        grid_col_names = set(self._grid.col_names)
+
+        def new_col_name(name: str) -> str:
+            """
+            We are going to add a column name. Find a name that does not
+            conflict with the column names in the original data.
+            """
+            i = 1
+            candidate = name
+            while candidate in grid_col_names:
+                i += 1
+                candidate = f"{name} ({i})"
+            return candidate
+
+        if filenames:
+            # This looks like a no op, but it has the side-effect of making
+            # sure the new "File" column is the first thing in the 'data'
+            # dict. As a result, it will appear first in the list of columns.
+            col_name = new_col_name("File")
+            data[col_name] = []
 
         for row in self.rows:
             if row.matched:
                 if row_numbers:
-                    data["Row"].append(row.index + row_inc)
+                    col_name = new_col_name("Row")
+                    # Note that this new column is numeric. All other columns
+                    # are strings (because that is how we orignially read (or
+                    # converted) the data out of CSV, TSV, or Excel). We make
+                    # our additional "Row" column numeric in order to know
+                    # that we can right justify it in rich_table. If not, we
+                    # would either need to leave it left justified or think
+                    # of a non-horrible way for this function to return the
+                    # name of the newly-added "Row" column so the name could
+                    # be passed to rich_table.
+                    data[col_name].append(row.index + row_inc)
                 for col_index, cell in enumerate(row):
                     if only_matching_cols and not self.cols[col_index].matched:
                         continue
 
-                    col_name = self._grid.col_names[col_index]
+                    grid_col_name = self._grid.col_names[col_index]
                     excel_col = int_to_excel_column(col_index + 1)
                     str_col = f"{col_index + 1}"
 
                     if self._grid.header:
                         if excel_cols:
-                            key = f"{col_name} ({excel_col})"
+                            col_name = f"{grid_col_name} ({excel_col})"
                         elif col_numbers:
-                            key = f"{col_name} ({str_col})"
+                            col_name = f"{grid_col_name} ({str_col})"
                         else:
-                            key = col_name
+                            col_name = grid_col_name
                     else:
-                        key = "Column " + (excel_col if excel_cols else str_col)
+                        col_name = "Column " + (excel_col if excel_cols else str_col)
 
-                    data[key].append(cell.format(unmatched, color))
+                    if col_name != grid_col_name:
+                        col_name = new_col_name(col_name)
+
+                    data[col_name].append(cell.format(unmatched, color))
 
                 if filenames:
-                    data["File"].append(self._grid.filename)
+                    col_name = new_col_name("File")
+                    data[col_name].append(self._grid.filename)
 
         return pl.DataFrame(data)
 
-    def rich_table(
-        self, df: pl.DataFrame, width: int | None, out: Path | None
-    ) -> Table | None:
+    def rich_table(self, df: pl.DataFrame) -> Table:
         table = Table(title=self._grid.filename)
 
+        numeric_columns = set(df.select(cs.numeric()).columns)
+
         for col_index, col_name in enumerate(df.columns):
-            if col_name == "Row":
-                assert col_index == 0
-                justify = "right"
-            else:
-                justify = "right" if self.cols[col_index - 1].numeric else "left"
+            justify = (
+                "right"
+                if col_name in numeric_columns or self.cols[col_index - 1].numeric
+                else "left"
+            )
 
             table.add_column(col_name, justify=justify)
 
         for row in df.iter_rows():
             table.add_row(*map(str, row))
 
-        if out is None:
-            return table
-        else:
-            with open(out, "w") as fp:
-                console = Console(file=fp, width=width)
-                console.print(table)
+        return table
 
     def format(
         self,
@@ -134,6 +162,7 @@ class Match:
         col_numbers: bool = False,
         excel_cols: bool = False,
         out: Path | None = None,
+        excel_writer: ExcelWriter | None = None,
     ) -> str | Table | None:
         df = self.polars_df(
             row_numbers,
@@ -145,41 +174,29 @@ class Match:
             excel_cols=excel_cols,
         )
 
-        if count or only_filename:
-            if count:
-                result = f"{self._grid.filename + ':' if filenames else ''}{len(df)}"
-            else:
-                result = self._grid.filename
+        if count:
+            return f"{self._grid.filename + ':' if filenames else ''}{len(df)}"
 
-            if out:
-                with open(out, "w") as fp:
-                    print(result, file=fp)
-                return
-
-            return result
+        if only_filename:
+            return self._grid.filename
 
         if format_ in ("csv", "tsv"):
-            write_csv = partial(
-                df.write_csv,
+            output = StringIO()
+            df.write_csv(
+                output,
                 separator="," if format_ == "csv" else "\t",
                 include_header=self._grid.header,
             )
-            if out:
-                with open(out, "w") as fp:
-                    write_csv(fp)
-                return
-
-            output = StringIO()
-            write_csv(output)
             # Drop the trailing newline so our caller can consistently print
             # our result without needing to selectively use print(result, end="").
             return output.getvalue().rstrip("\n")
 
         if format_ == "rich":
-            return self.rich_table(df, width, out)
+            return self.rich_table(df)
 
         if format_ == "excel":
-            df.write_excel(out)
+            assert excel_writer is not None
+            excel_writer.write(df, self._grid.filename)
             return
 
         raise ValueError(f"Unknown output format {format_!r}.")

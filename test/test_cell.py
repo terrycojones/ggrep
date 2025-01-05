@@ -1,4 +1,3 @@
-import pytest
 import re
 
 from xgrep.cell import Cell
