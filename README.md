@@ -91,11 +91,6 @@ $ xgrep --format csv 'Xia|radius|Jilin' example.xlsx
 If you use `--format excel` you will also need to give an output filename
 using `--out`.
 
-#### More...
-
-By default, `xgrep` will only search the first sheet in a workbook. You can
-search them all by passing `--sheet-id 0`.
-
 ### Usage
 
 <pre>
