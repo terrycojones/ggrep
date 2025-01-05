@@ -21,17 +21,16 @@ def check_args(
     """
     if format_ == "excel":
         if out is None:
-            print(
-                "For Excel output you must use --out to give a filename.",
-                file=sys.stderr,
+            click.echo(
+                "For Excel output you must use --out to give a filename.", err=True
             )
             sys.exit(-1)
 
         if sheet_id and sheet_name:
-            print(
+            click.echo(
                 "You cannot use both --sheet-id and --sheet-name to select Excel "
                 "sheets.",
-                file=sys.stderr,
+                err=True,
             )
             sys.exit(-1)
 
@@ -284,10 +283,10 @@ def cli(
     """
     check_args(format_, out, sheet_id, sheet_name)
 
-    # Set empty tuples to be None to avoid an error from pl.read_excel.
+    # Set empty sheet-specifying tuples to be None to avoid an error from pl.read_excel.
     sheet_name = sheet_name or None
     sheet_id = sheet_id or None
-    # Sheet id 0 cannot be passed in a tuple. Set sheet_id to 0 if we
+    # Sheet id 0 cannot be passed in a tuple. Also, set sheet_id to 0 if we
     # have not been told otherwise. I.e., seaching all sheets is the default.
     if (sheet_name is None and sheet_id is None) or sheet_id == (0,):
         sheet_id = 0
@@ -325,7 +324,7 @@ def cli(
                 None,
             )
         except BaseException as e:
-            print(f"Could not read {str(path)!r}: {e}.", file=sys.stderr)
+            click.echo(f"Could not read {str(path)!r}: {e}.", err=True)
             sys.exit(-1)
 
         for grid in grids:

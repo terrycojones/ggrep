@@ -1,6 +1,6 @@
 [project]
 name = "xgrep"
-version = "0.2.8"
+version = "0.2.9"
 description = "xgrep: A grep for Excel (and CSV/TSV) files."
 readme = "README.md"
 authors = [
