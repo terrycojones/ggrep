@@ -82,12 +82,22 @@ class ExcelWriter:
         self.workbook.close()
 
         if self.empty and not self.save_empty_output:
-            # If we have not written anything, the file should be empty.
+            # If we have not written anything, the file will have an empty
+            # sheet. It doesn't have a zero size, so we need to read it to
+            # confirm. (BTW, simply skipping the call to 'close' does not
+            # prevent the file from being created if nothing was added to the
+            # output.)
             try:
                 pl.read_excel(self.path)
             except pl.exceptions.NoDataError:
-                # As expected.
+                # No output, as expected.
                 self.path.unlink()
+                if not self.quiet:
+                    print(
+                        "No matches were found, so nothing was written to "
+                        f"{str(self.path)!r}.",
+                        file=sys.stderr,
+                    )
             else:
                 raise Exception(
                     f"Expected output Excel file {str(self.path)!r} to be empty, but "
